@@ -4,6 +4,7 @@ import {
 } from "class-validator"
 import { UniqueInColumn } from "../decorators/uniqueColumn.decorator";
 import * as bcrypt from "bcrypt";
+import { PasswordValidation } from "../lib/passwordValidation"
 
 @Entity()
 @Unique(["email"])
@@ -36,19 +37,20 @@ export class User {
     @IsNotEmpty()
     passwordHash!: string;
 
-    constructor(firstname: string, lastname: string, passwordHash: string, email?: string) {
+    constructor(firstname: string, lastname: string, email?: string) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.passwordHash = passwordHash;
+        this.passwordHash = "tmpPassword";
         if (email)
             this.email = email;
     }
 
     async setPassword(password: string, passwordConfirmation: string) {
-        if (password !== passwordConfirmation) {
+        if (password !== passwordConfirmation)
             throw new Error("Password and password confirmation do not match")
-        }
-        this.passwordHash = await bcrypt.hash(password, 10)
+        if (!PasswordValidation.isPasswordValid(password))
+            throw new Error("Password is not strong enough")
+        this.passwordHash = await bcrypt.hash(password, 10);
     }
 }
 
