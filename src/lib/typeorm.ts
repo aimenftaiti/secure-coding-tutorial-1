@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm'
 import { User } from '../entities/user'
-import * as env_variables from '../dotenv'
+import * as env_variables from './dotenv'
 import { UserSubscriber } from '../subscribers/user.subscriber';
 
 export const AppDataSource =
