@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/schema",
   "title": "CreateUserResponseBody",
   "type": "object",
   "properties": {
@@ -12,9 +12,9 @@
     "lastName": {
       "type": "string"
     },
-    "password": {
+    "email": {
       "type": "string"
     }
   },
-  "required": ["firstName", "lastName", "email", "password", "id"]
+  "required": ["firstName", "lastName", "email", "id"]
 }

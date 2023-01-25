@@ -8,8 +8,6 @@ import { DataSource } from 'typeorm'
 
 chai.use(chaiAsPromised)
 
-
-
 describe('User', function () {
 
   let dataSource: DataSource;
