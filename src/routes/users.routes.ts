@@ -3,7 +3,6 @@ import { CreateUserRequestBody } from "../schemas/types/user.create.request.body
 import * as UserRequestBodySchema from '../schemas/json/user.create.request.body.json'
 import * as UserResponseBodySchema from '../schemas/json/user.create.response.body.json'
 import { User } from "../entities/user";
-import { CreateUserResponseBody } from "../schemas/types/user.create.response.body";
 import { getInitializedAppDataSource } from "../lib/typeorm";
 
 // eslint-disable-next-line @typescript-eslint/require-await
@@ -13,7 +12,7 @@ export async function userRoutes(fastify: FastifyInstance) {
             body: UserRequestBodySchema,
             response: { 201: UserResponseBodySchema },
         },
-        handler: async function (request, reply): Promise<CreateUserResponseBody> {
+        handler: async function (request, reply) {
             const userBody = request.body;
             const user = new User(
                 userBody.firstName,
@@ -33,9 +32,7 @@ export async function userRoutes(fastify: FastifyInstance) {
                 }
             }
 
-            await (await getInitializedAppDataSource()).getRepository(User).save(
-                user
-            );
+            await (await getInitializedAppDataSource()).getRepository(User).save(user);
             return reply.status(201).send({
                 id: user.id.toString(),
                 firstName: user.firstname,

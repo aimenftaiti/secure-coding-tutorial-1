@@ -6,6 +6,9 @@ import { DataSource } from 'typeorm'
 import { User } from "../../entities/user"
 import * as chaiAsPromised from 'chai-as-promised'
 import fastify, { RouteOptions } from 'fastify'
+import { assertsSchemaBodyParamsQueryPresenceHook, MissingValidationElementsError } from '../../errors/MissingValidationElementsError'
+import { CreateUserRequestBody } from '../../schemas/types/user.create.request.body'
+import * as UserRequestBodySchema from '../../schemas/json/user.create.request.body.json'
 
 
 chai.use(chaiAsPromised)
@@ -24,17 +27,19 @@ describe('/web-api/users', function () {
         })
 
         it('should register the user', async function () {
+            const payload: CreateUserRequestBody = {
+
+                "firstName": "Aimen-Allah",
+                "lastName": "FTAITI",
+                "email": "aimenftaiti@gmail.fr",
+                "password": "Motgsrdhsryhqe+-=to28*?",
+                "passwordConfirmation": "Motgsrdhsryhqe+-=to28*?"
+            }
             const response = await server.inject(
                 {
                     url: `/web-api/users`,
                     method: 'POST',
-                    payload: {
-                        "firstName": "Aimen-Allah",
-                        "lastName": "FTAITI",
-                        "email": "aimenftaiti@gmail.fr",
-                        "password": "Motgsrdhsryhqe+-=to28*?",
-                        "passwordConfirmation": "Motgsrdhsryhqe+-=to28*?"
-                    }
+                    payload: payload,
                 }
             )
             chai.expect(response.statusCode).equal(201);
@@ -55,15 +60,11 @@ describe('/web-api/users', function () {
             }).to.throw()
         })
 
-        it('should throw an error if the validation schema is missing', () => {
-            const fastisyTestServer = fastify().addHook('onRoute', assertsResponseSchemaPresenceHook)
-            chai.expect(() => {
-                fastisyTestServer.route({
-                    method: 'GET',
-                    url: '/test',
-                    handler: () => 0
-                })
-            }).to.throw()
+        it('should throw an error if the validation schema is missing', async () => {
+            const routeOptions: RouteOptions = { url: '/test', method: 'GET', handler: () => ({}) }
+            await chai.expect(
+                assertsSchemaBodyParamsQueryPresenceHook(routeOptions)
+            ).to.be.rejectedWith(MissingValidationElementsError)
         })
     })
 })
