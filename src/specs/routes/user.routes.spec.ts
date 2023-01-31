@@ -5,7 +5,7 @@ import { AppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
 import { User } from "../../entities/user"
 import * as chaiAsPromised from 'chai-as-promised'
-import fastify from 'fastify'
+import fastify, { RouteOptions } from 'fastify'
 
 
 chai.use(chaiAsPromised)
@@ -51,6 +51,17 @@ describe('/web-api/users', function () {
                     method: 'GET',
                     url: '/test',
                     handler: () => ({})
+                })
+            }).to.throw()
+        })
+
+        it('should throw an error if the validation schema is missing', () => {
+            const fastisyTestServer = fastify().addHook('onRoute', assertsResponseSchemaPresenceHook)
+            chai.expect(() => {
+                fastisyTestServer.route({
+                    method: 'GET',
+                    url: '/test',
+                    handler: () => 0
                 })
             }).to.throw()
         })
