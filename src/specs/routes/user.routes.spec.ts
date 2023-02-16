@@ -66,5 +66,31 @@ describe('/web-api/users', function () {
                 assertsSchemaBodyParamsQueryPresenceHook(routeOptions)
             ).to.be.rejectedWith(MissingValidationElementsError)
         })
+
+        // here, it throw a 404 because the route GET is not implemented
+        // but the test is "designed" to throw a 400 when requesting by unexisting id
+        it('show throw a 404 when requesting by unexisting id', async function () {
+            const response = await server.inject({
+                method: 'GET',
+                url: '/users/random-id',
+            })
+            chai.expect(response.statusCode).to.equal(404)
+        })
+
+        it('should throw Validation Error when required fields are missing', async function () {
+            const userBody = {
+                "firstName": "Aimen-Allah",
+                "lastName": "FTAITI",
+                "email": "aimenftaiti1@gmail.fr",
+                "password": null,
+                "passwordConfirmation": null,
+            }
+            const response = await server.inject({
+                url: '/web-api/users',
+                method: 'POST',
+                payload: { userBody },
+            })
+            chai.expect(response.statusCode).equal(400)
+        })
     })
 })
