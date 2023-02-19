@@ -5,8 +5,9 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export interface CreateSessionRequestBody {
-  email: string;
-  password: string;
-  [k: string]: unknown;
+export interface CurrentUserRequest {
+  id: string;
+  session: {
+    [k: string]: unknown;
+  };
 }

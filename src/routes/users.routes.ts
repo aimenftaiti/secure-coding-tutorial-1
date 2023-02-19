@@ -2,13 +2,18 @@ import { FastifyInstance } from "fastify";
 import { CreateUserRequestBody } from "../schemas/types/user.create.request.body";
 import * as UserRequestBodySchema from '../schemas/json/user.create.request.body.json'
 import * as UserResponseBodySchema from '../schemas/json/user.create.response.body.json'
+import * as CurrentUserResponseSchema from '../schemas/json/current.user.response.json'
+import * as CurrentUserRequestSchema from '../schemas/json/current.user.request.body.json'
 import { User } from "../entities/user";
 import { getInitializedAppDataSource } from "../lib/typeorm";
+import { CurrentUserRequest } from "../schemas/types/current.user.request.body";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function userRoutes(fastify: FastifyInstance) {
     fastify.post<{ Body: CreateUserRequestBody }>("", {
         schema: {
+            params: {},
+            querystring: {},
             body: UserRequestBodySchema,
             response: { 201: UserResponseBodySchema },
         },
@@ -41,6 +46,6 @@ export async function userRoutes(fastify: FastifyInstance) {
                 email: user.email,
             });
         }
-    }
-    );
+    });
+
 }

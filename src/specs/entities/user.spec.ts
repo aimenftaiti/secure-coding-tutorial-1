@@ -2,8 +2,9 @@ import * as chai from 'chai'
 import { assert, expect } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import { User } from '../../entities/user'
-import { AppDataSource } from '../../lib/typeorm'
+import { AppDataSource, getInitializedAppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
+import { Session } from '../../entities/session'
 //import { QueryFailedError } from 'typeorm'
 
 chai.use(chaiAsPromised)
@@ -13,11 +14,11 @@ describe('User', function () {
   let dataSource: DataSource;
 
   before(async function () {
-    dataSource = await AppDataSource().initialize();
+    dataSource = await getInitializedAppDataSource();
   })
 
   beforeEach(async function () {
-    await dataSource.getRepository(User).clear()
+    await dataSource.getRepository(User).delete({})
   })
 
   // function to create a user repository

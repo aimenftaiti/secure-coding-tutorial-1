@@ -1,7 +1,7 @@
 // src/specs/routes/web-api/users-routes.spec.ts
 import * as chai from 'chai'
 import { assertsResponseSchemaPresenceHook, server } from "../../lib/fastify"
-import { AppDataSource } from '../../lib/typeorm'
+import { AppDataSource, getInitializedAppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
 import { User } from "../../entities/user"
 import * as chaiAsPromised from 'chai-as-promised'
@@ -9,6 +9,7 @@ import fastify, { RouteOptions } from 'fastify'
 import { assertsSchemaBodyParamsQueryPresenceHook, MissingValidationElementsError } from '../../errors/MissingValidationElementsError'
 import { CreateUserRequestBody } from '../../schemas/types/user.create.request.body'
 import * as UserRequestBodySchema from '../../schemas/json/user.create.request.body.json'
+import { Session } from '../../entities/session'
 
 
 chai.use(chaiAsPromised)
@@ -18,12 +19,12 @@ describe('/web-api/users', function () {
         let dataSource: DataSource;
 
         before(async function () {
-            dataSource = await AppDataSource().initialize();
+            dataSource = await getInitializedAppDataSource();
         })
 
         beforeEach(async function () {
-            await dataSource.getRepository(User).clear()
-
+            await dataSource.getRepository(Session).delete({})
+            await dataSource.getRepository(User).delete({})
         })
 
         it('should register the user', async function () {
@@ -31,7 +32,7 @@ describe('/web-api/users', function () {
 
                 "firstName": "Aimen-Allah",
                 "lastName": "FTAITI",
-                "email": "aimenftaiti@gmail.fr",
+                "email": "test@test.fr",
                 "password": "Motgsrdhsryhqe+-=to28*?",
                 "passwordConfirmation": "Motgsrdhsryhqe+-=to28*?"
             }
@@ -72,7 +73,7 @@ describe('/web-api/users', function () {
         it('show throw a 404 when requesting by unexisting id', async function () {
             const response = await server.inject({
                 method: 'GET',
-                url: '/users/random-id',
+                url: '/web-api/users/random-id',
             })
             chai.expect(response.statusCode).to.equal(404)
         })
