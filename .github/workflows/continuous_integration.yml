@@ -1,0 +1,59 @@
+name: unit_lint_load_secu_quality
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  unit_lint_load_test_quality:
+    services:
+      postgres:
+          image: postgres:12-alpine
+          env:
+              POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+              POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+              POSTGRES_DB: ${{ secrets.DB_DATABASE }}
+          ports:
+              - 5432:5432
+          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: 'Create env file'
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
+      
+    - name: Display workflow infos
+      run: |
+        echo The job_id is: $GITHUB_JOB
+        echo "The id of this action is: $GITHUB_ACTION"
+        echo "The run id is: $GITHUB_RUN_ID"
+        echo "The GitHub Actor's username is: $GITHUB_ACTOR"
+    - name: Setup NodeJS
+      uses: actions/setup-node@v3
+      with:
+          node-version: '17'
+
+    - name: Initialise the project
+      run: npm install
+
+    - name: Check project syntax with ESLINT
+      run: npm run lint
+
+    - name: Run unit test with MochaJS
+      run: npm run build_and_test
+
+    # only when push on dev or push on main 
+    - name: SonarCloud Scan
+      if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+      uses: SonarSource/sonarcloud-github-action@master 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

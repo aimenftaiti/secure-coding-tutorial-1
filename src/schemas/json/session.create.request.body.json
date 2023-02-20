@@ -10,5 +10,11 @@
       "type": "string"
     }
   },
-  "required": ["firstName", "lastName", "email", "password", "passwordConfirmation"]
+  "required": [
+    "firstName",
+    "lastName",
+    "email",
+    "password",
+    "passwordConfirmation"
+  ]
 }

@@ -1,10 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import {
     IsNotEmpty,
 } from "class-validator"
 import { UniqueInColumn } from "../decorators/uniqueColumn.decorator";
 import * as bcrypt from "bcrypt";
 import { PasswordValidation } from "../lib/passwordValidation"
+import { Session } from "./session";
 
 @Entity()
 @Unique(["email"])
@@ -37,12 +38,15 @@ export class User {
     @IsNotEmpty()
     passwordHash!: string;
 
+    @OneToMany(() => Session, session => session.user, { nullable: true })
+    sessions?: Session[];
+
     constructor(firstname: string, lastname: string, email?: string) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.passwordHash = "tmpPassword";
         if (email)
-            this.email = email;
+            this.email = email.toLowerCase();
     }
 
     async setPassword(password: string, passwordConfirmation: string) {

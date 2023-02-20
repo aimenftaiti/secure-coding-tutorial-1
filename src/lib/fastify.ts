@@ -3,6 +3,9 @@ import { userRoutes } from '../routes/users.routes'
 import { MissingValidationElementsError, assertsSchemaBodyParamsQueryPresenceHook } from '../errors/MissingValidationElementsError'
 import { ValidationError } from 'class-validator'
 import { EntityNotFoundError } from 'typeorm'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import cookie, { FastifyCookieOptions } from '@fastify/cookie'
+//import { loadSession } from './session'
 
 const errorHandler = (
     error: FastifyError,
@@ -32,9 +35,12 @@ export const server = fastify({
     },
 })
     //.addHook('onRoute', assertsResponseSchemaPresenceHook)
+    //.register(cookie, { secret: COOKIE_SECRET } as FastifyCookieOptions)
     .setErrorHandler(errorHandler)
     .addHook('onRoute', assertsSchemaBodyParamsQueryPresenceHook)
+    //.addHook('preHandler', loadSession)
     .register(userRoutes, { prefix: '/web-api/users' })
+    .register(userRoutes, { prefix: '/web-api/sessions' })
 
 export function assertsResponseSchemaPresenceHook(routeOptions: RouteOptions) {
     if (!routeOptions.schema?.response) {
