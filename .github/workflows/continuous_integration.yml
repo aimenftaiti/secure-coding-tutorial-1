@@ -8,6 +8,17 @@ on:
 
 jobs:
   unit_lint_load_test_quality:
+    services:
+      postgres:
+          image: postgres:12-alpine
+          env:
+              POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+              POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+              POSTGRES_DB: ${{ secrets.DB_DATABASE }}
+          ports:
+              - 5432:5432
+          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -16,9 +27,7 @@ jobs:
     - name: 'Create env file'
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Run testing databse
-      run: |
-        docker-compose up -d
+      
     - name: Display workflow infos
       run: |
         echo The job_id is: $GITHUB_JOB
