@@ -1,0 +1,49 @@
+name: Create a new release
+
+on:
+  push:
+    branches:
+      - "dev"
+      - "main"
+      - "continuous_delivery"
+env:
+  IMAGE_NAME: aimenftaiti/secure_coding_project
+
+jobs:
+  build_image_and_push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup NodeJS
+      uses: actions/setup-node@v3
+      with:
+          node-version: '17'
+
+    - name: Update tag
+      id: get-image-tag-by-date
+      run: |
+        echo ::set-output name=NEW_TAG::$NEW_TAG
+
+    - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build image
+      env:
+        NEW_TAG: ${{ steps.get-image-tag-by-date.outputs.NEW_TAG }}
+      run : |
+        docker build . --file Dockerfile --tag $IMAGE_NAME:$NEW_TAG
+    
+    - name: Push the Docker image to Hub Registery
+      env:
+        NEW_TAG: ${{ steps.get-image-tag-by-date.outputs.NEW_TAG }}
+      run: docker push $IMAGE_NAME:$NEW_TAG
