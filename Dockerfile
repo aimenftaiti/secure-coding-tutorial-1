@@ -4,7 +4,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
 USER node
 WORKDIR /home/node/app
-COPY --chown=node:node /package.json /package-lock.json /srv/api/
+COPY --chown=node:node /package.json /srv/api/
 COPY --chown=node:node /src/ /srv/api/src/
 USER root
 RUN npm install
@@ -18,7 +18,7 @@ WORKDIR /home/node/app
 EXPOSE 4000
 
 COPY --from=build --chown=node:node /srv/api/src/  /srv/api/src/
-COPY --from=build --chown=node:node /srv/api/package.json  /srv/api/package.json /srv/api/
+COPY --from=build --chown=node:node /srv/api/package.json /srv/api/package.json /srv/api/
 USER root
 RUN npm install
 ENV NODE_ENV=production
