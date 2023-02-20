@@ -15,7 +15,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
 USER node
 WORKDIR /srv/api/
-EXPOSE 4000
+EXPOSE 3000
 
 COPY --from=build --chown=node:node /srv/api/src/ /srv/api/src/
 COPY --from=build --chown=node:node /srv/api/package.json /srv/api/package.json /srv/api/
