@@ -2,9 +2,8 @@ import * as chai from 'chai'
 import { assert, expect } from 'chai'
 import * as chaiAsPromised from 'chai-as-promised'
 import { User } from '../../entities/user'
-import { AppDataSource, getInitializedAppDataSource } from '../../lib/typeorm'
+import { getInitializedAppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
-import { Session } from '../../entities/session'
 //import { QueryFailedError } from 'typeorm'
 
 chai.use(chaiAsPromised)

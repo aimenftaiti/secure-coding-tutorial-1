@@ -3,7 +3,6 @@ import { CreateSessionRequestBody } from "../schemas/types/session.create.reques
 import * as SessionRequestBodySchema from '../schemas/json/user.create.request.body.json'
 import { getInitializedAppDataSource } from "../lib/typeorm"
 import { User } from "../entities/user"
-import { Session } from "../entities/session"
 import { saveSession } from "../lib/session"
 
 

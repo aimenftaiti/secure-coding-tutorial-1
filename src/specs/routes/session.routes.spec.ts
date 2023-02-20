@@ -1,17 +1,12 @@
 // src/specs/routes/web-api/users-routes.spec.ts
 import * as chai from 'chai'
-import { assertsResponseSchemaPresenceHook, server } from "../../lib/fastify"
-import { AppDataSource, getInitializedAppDataSource } from '../../lib/typeorm'
+import { server } from "../../lib/fastify"
+import { getInitializedAppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
 import { User } from "../../entities/user"
 import * as chaiAsPromised from 'chai-as-promised'
-import fastify, { RouteOptions } from 'fastify'
-import { assertsSchemaBodyParamsQueryPresenceHook, MissingValidationElementsError } from '../../errors/MissingValidationElementsError'
-import { CreateUserRequestBody } from '../../schemas/types/user.create.request.body'
-import * as UserRequestBodySchema from '../../schemas/json/user.create.request.body.json'
 import { Session } from '../../entities/session'
 import { buildUserFixture } from '../fixtures/users-fixtures'
-import { sign } from '@fastify/cookie'
 import { buildSessionFixture } from '../fixtures/sessions-fixtures'
 
 chai.use(chaiAsPromised)
@@ -20,6 +15,7 @@ describe('/web-api/users', function () {
     describe('POST #create', function () {
         let dataSource: DataSource;
         let user: User;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let session: Session;
 
         before(async function () {

@@ -3,8 +3,9 @@ import { userRoutes } from '../routes/users.routes'
 import { MissingValidationElementsError, assertsSchemaBodyParamsQueryPresenceHook } from '../errors/MissingValidationElementsError'
 import { ValidationError } from 'class-validator'
 import { EntityNotFoundError } from 'typeorm'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import cookie, { FastifyCookieOptions } from '@fastify/cookie'
-import { loadSession } from './session'
+//import { loadSession } from './session'
 
 const errorHandler = (
     error: FastifyError,

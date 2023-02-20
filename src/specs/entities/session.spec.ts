@@ -1,12 +1,11 @@
 // src/specs/routes/web-api/users-routes.spec.ts
 import * as chai from 'chai'
-import { AppDataSource, getInitializedAppDataSource } from '../../lib/typeorm'
+import { getInitializedAppDataSource } from '../../lib/typeorm'
 import { DataSource } from 'typeorm'
 import * as chaiAsPromised from 'chai-as-promised'
 import { Session } from '../../entities/session'
 import { buildUserFixture } from '../fixtures/users-fixtures'
 import { User } from '../../entities/user'
-import { server } from '../../lib/fastify'
 
 chai.use(chaiAsPromised)
 
